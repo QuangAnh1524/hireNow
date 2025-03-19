@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.domain.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,29 +18,33 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user")
-    public List<User> getAllUser() {
-        return this.userService.getAllUser();
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUser() {
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.getAllUser());
     }
 
-    @GetMapping("/user/{id}")
-    public User getUserById(@PathVariable("id") long id) {
-        return this.userService.getUserById(id);
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") long id) {
+        User user = this.userService.getUserById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    @PostMapping("/user")
-    public User createUser(@RequestBody User user) {
-        return this.userService.saveUser(user);
+    @PostMapping("/users")
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User user1 = this.userService.saveUser(user);
+//        return this.userService.saveUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user1);
     }
 
-    @DeleteMapping("/user/{id}")
-    public String deleteUser(@PathVariable("id") long id) {
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) {
         this.userService.deleteUser(id);
-        return "success";
+        return ResponseEntity.status(HttpStatus.OK).body("delete success");
     }
 
-    @PutMapping("/user")
-    public User updateUser(@RequestBody User user) {
-        return this.userService.updateUser(user);
+    @PutMapping("/users")
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
+        User user1 = this.userService.updateUser(user);
+        return ResponseEntity.ok(user1);
     }
 }

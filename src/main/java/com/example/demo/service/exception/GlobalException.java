@@ -12,8 +12,8 @@ public class GlobalException {
     public ResponseEntity<RestReponse<Object>> handelIdInvalidException(idInvalidException idInvalidException) {
         RestReponse<Object> res = new RestReponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setError(idInvalidException.getMessage());
-        res.setMessage("idInvalidException");
+        res.setError("CALL API FAILED");
+        res.setMessage(idInvalidException.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 }

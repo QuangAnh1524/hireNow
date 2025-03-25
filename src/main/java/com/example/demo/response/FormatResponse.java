@@ -25,14 +25,14 @@ public class FormatResponse implements ResponseBodyAdvice {
         HttpServletResponse servletResponse = ((ServletServerHttpResponse) response).getServletResponse();
         int status = servletResponse.getStatus();
         RestReponse<Object> res = new RestReponse<>();
+        //neu la loi thi globalExc đã xử lý, trả về body gốc
         if (status >= 400) {
-            res.setError("CALL API FAILED");
-            res.setMessage(body);
-        } else {
-            res.setData(body);
-            res.setMessage("CALL API SUCCESS");
+            return body;
         }
-
+        //truong hop response thanh cong
+        res.setStatusCode(status);
+        res.setData(body);
+        res.setMessage("CALL API SUCCESS");
         return res;
     }
 }

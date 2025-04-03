@@ -3,8 +3,14 @@ package com.example.demo.service.exception;
 import com.example.demo.domain.RestReponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalException {
@@ -15,5 +21,20 @@ public class GlobalException {
         res.setError("CALL API FAILED");
         res.setMessage(idInvalidException.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<RestReponse<Object>> validationError(MethodArgumentNotValidException exception) {
+        BindingResult result = exception.getBindingResult();
+        final List<FieldError> fieldErrors = result.getFieldErrors();
+
+        RestReponse<Object> restReponse = new RestReponse<Object>();
+        restReponse.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        restReponse.setError(exception.getBody().getDetail());
+
+        List<String> errors = fieldErrors.stream().map(f -> f.getDefaultMessage()).collect(Collectors.toList());
+        restReponse.setMessage(errors.size() > 1 ? errors : errors.get(0));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(restReponse);
     }
 }

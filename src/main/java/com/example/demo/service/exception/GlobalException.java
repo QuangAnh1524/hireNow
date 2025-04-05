@@ -3,6 +3,8 @@ package com.example.demo.service.exception;
 import com.example.demo.domain.RestReponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,12 +16,16 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalException {
-    @ExceptionHandler(value = idInvalidException.class)
-    public ResponseEntity<RestReponse<Object>> handelIdInvalidException(idInvalidException idInvalidException) {
+    @ExceptionHandler(value = {
+//            idInvalidException.class,
+            UsernameNotFoundException.class,
+            BadCredentialsException.class
+    })
+    public ResponseEntity<RestReponse<Object>> handelIException(Exception exception) {
         RestReponse<Object> res = new RestReponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setError("CALL API FAILED");
-        res.setMessage(idInvalidException.getMessage());
+        res.setError(exception.getMessage());
+        res.setMessage("Exception occurs ...");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 

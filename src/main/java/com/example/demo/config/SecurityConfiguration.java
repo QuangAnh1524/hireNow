@@ -83,11 +83,11 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(authenticationEntryPoint))
-                .exceptionHandling(
-                        exceptions -> exceptions
-                                .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) //401: can login
-                                .accessDeniedHandler(new BearerTokenAccessDeniedHandler()) //403: can role
-                )
+//                .exceptionHandling(
+//                        exceptions -> exceptions
+//                                .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) //401: can login
+//                                .accessDeniedHandler(new BearerTokenAccessDeniedHandler()) //403: can role
+//                )
                 .formLogin(f -> f.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return httpSecurity.build();

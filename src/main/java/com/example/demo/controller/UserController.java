@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.RestReponse;
 import com.example.demo.domain.User;
 import com.example.demo.service.UserService;
 import com.example.demo.service.exception.idInvalidException;
@@ -40,13 +41,18 @@ public class UserController {
 
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) throws idInvalidException {
-        if (id > 1500) {
-            throw new idInvalidException("id khong dc lon hon 1500");
-        }
+    public ResponseEntity<RestReponse<String>> deleteUser(@PathVariable("id") long id) throws idInvalidException {
         this.userService.deleteUser(id);
-        return ResponseEntity.status(HttpStatus.OK).body("delete success");
+
+        RestReponse<String> response = new RestReponse<>();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("Delete success");
+        response.setError(null);
+        response.setData(null);
+
+        return ResponseEntity.ok(response);
     }
+
 
     @PutMapping("/users")
     public ResponseEntity<User> updateUser(@RequestBody User user) {

@@ -1,5 +1,7 @@
 package com.example.demo.domain;
 
+import com.example.demo.util.SecurityUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -23,6 +25,8 @@ public class Company {
     private String description;
     private String address;
     private String logo;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
     private Instant createdAt;
     private Instant updateAt;
     private String createdBy;
@@ -30,7 +34,7 @@ public class Company {
 
     @PrePersist
     public void handleBeforeCreate() {
-        this.setCreatedBy("quang anh");
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
         this.setCreatedAt(Instant.now());
     }
 

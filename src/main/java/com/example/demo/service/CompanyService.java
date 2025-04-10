@@ -1,7 +1,12 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Company;
+import com.example.demo.domain.DTO.Meta;
+import com.example.demo.domain.DTO.ResultPaginationDTO;
 import com.example.demo.repository.CompanyRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +19,20 @@ public class CompanyService {
         this.companyRepository = companyRepository;
     }
 
-    public List<Company> gettAllCompany() {
-        return this.companyRepository.findAll();
+    public ResultPaginationDTO gettAllCompany(Specification<Company> pageable) {
+        List<Company> companies = this.companyRepository.findAll(pageable);
+        ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
+        Meta meta = new Meta();
+
+//        meta.setPage(companies.getNumber() + 1);
+//        meta.setPageSize(companies.getSize());
+//        meta.setPages(companies.getTotalPages());
+//        meta.setTotal(companies.getTotalElements());
+//
+        resultPaginationDTO.setMeta(meta);
+        resultPaginationDTO.setResult(companies);
+
+        return resultPaginationDTO;
     }
 
     public Company saveCompany(Company company) {
@@ -33,10 +50,6 @@ public class CompanyService {
             currentCompany.setAddress(company.getAddress());
             currentCompany.setDescription(company.getDescription());
             currentCompany.setLogo(company.getLogo());
-            currentCompany.setCreatedBy(company.getCreatedBy());
-            currentCompany.setCreatedAt(company.getCreatedAt());
-            currentCompany.setUpdatedBy(company.getUpdatedBy());
-            currentCompany.setUpdateAt(company.getUpdateAt());
             currentCompany = this.companyRepository.save(currentCompany);
         }
         return currentCompany;

@@ -28,14 +28,14 @@ public class CompanyController {
     //get all company
     @GetMapping("/companies")
     public ResponseEntity<ResultPaginationDTO> getAllCompany(
-            @Filter Specification<Company> spec,
-            @RequestParam("current") Optional<String> currentOptional,
-            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
+            @Filter Specification<Company> spec, Pageable pageable) {
+//            @RequestParam("current") Optional<String> currentOptional,
+//            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
 //        String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
 //        String sPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() : "";
 //        Pageable pageable = PageRequest.of(Integer.parseInt(sCurrent) - 1, Integer.parseInt(sPageSize));
 
-        return ResponseEntity.status(HttpStatus.OK).body(this.companyService.gettAllCompany(spec));
+        return ResponseEntity.status(HttpStatus.OK).body(this.companyService.gettAllCompany(spec, pageable));
     }
 
     //create company

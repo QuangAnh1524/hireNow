@@ -19,18 +19,19 @@ public class CompanyService {
         this.companyRepository = companyRepository;
     }
 
-    public ResultPaginationDTO gettAllCompany(Specification<Company> pageable) {
-        List<Company> companies = this.companyRepository.findAll(pageable);
+    public ResultPaginationDTO gettAllCompany(Specification<Company> specification, Pageable pageable) {
+        Page<Company> companies = this.companyRepository.findAll(specification, pageable);
         ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
         Meta meta = new Meta();
 
-//        meta.setPage(companies.getNumber() + 1);
-//        meta.setPageSize(companies.getSize());
-//        meta.setPages(companies.getTotalPages());
-//        meta.setTotal(companies.getTotalElements());
-//
+        meta.setPage(pageable.getPageNumber() + 1);
+        meta.setPageSize(pageable.getPageSize());
+
+        meta.setPages(companies.getTotalPages());
+        meta.setTotal(companies.getTotalElements());
+
         resultPaginationDTO.setMeta(meta);
-        resultPaginationDTO.setResult(companies);
+        resultPaginationDTO.setResult(companies.getContent());
 
         return resultPaginationDTO;
     }

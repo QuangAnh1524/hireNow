@@ -5,6 +5,7 @@ import com.example.demo.domain.RestReponse;
 import com.example.demo.domain.User;
 import com.example.demo.service.UserService;
 import com.example.demo.service.exception.idInvalidException;
+import com.example.demo.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1")
 public class UserController {
 
     private final UserService userService;
@@ -27,6 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
+    @ApiMessage("fetch all users")
     public ResponseEntity<ResultPaginationDTO> getAllUser(@Filter Specification<User> specification, Pageable pageable) {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.getAllUser(specification, pageable));
     }

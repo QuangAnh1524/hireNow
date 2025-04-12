@@ -1,6 +1,7 @@
 package com.example.demo.response;
 
 import com.example.demo.domain.RestReponse;
+import com.example.demo.util.annotation.ApiMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
@@ -36,7 +37,8 @@ public class FormatResponse implements ResponseBodyAdvice {
         //truong hop response thanh cong
         res.setStatusCode(status);
         res.setData(body);
-        res.setMessage("CALL API SUCCESS");
+        ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
+        res.setMessage(message != null ? message.value() : "CALL API SUCCESS");
         return res;
     }
 }

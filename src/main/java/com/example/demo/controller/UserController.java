@@ -7,6 +7,7 @@ import com.example.demo.service.UserService;
 import com.example.demo.service.exception.idInvalidException;
 import com.example.demo.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,14 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    @ApiMessage("Create a new user")
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) throws idInvalidException {
+        boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
+        if (isEmailExist) {
+            throw new idInvalidException(
+                    "Email" + user.getEmail() + "đã tồn tại, vui lòng sử dụng email khác"
+            );
+        }
         User user1 = this.userService.saveUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user1);
     }

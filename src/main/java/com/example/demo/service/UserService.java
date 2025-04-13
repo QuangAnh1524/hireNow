@@ -37,6 +37,14 @@ public class UserService {
       return this.userRepository.findUserById(id);
     }
 
+    public boolean isEmailExist(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
+    public ResCreateUserDTO convertToResCreateUserDTO(User user) {
+
+    }
+
     public ResultPaginationDTO getAllUser(Specification<User> specification, Pageable pageable) {
         Page<User> users = this.userRepository.findAll(specification, pageable);
         ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();

@@ -36,14 +36,14 @@ public class SecurityUtil {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String createAccessToken(Authentication authentication, ResLoginDTO.UserLogin loginDTO) {
+    public String createAccessToken(String email, ResLoginDTO.UserLogin loginDTO) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.jwtExpiration, ChronoUnit.SECONDS);
 
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
-                .subject(authentication.getName())
+                .subject(email)
                 .claim("user", loginDTO)
                 .build();
 

@@ -10,5 +10,4 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpec
 
     Company getById(long id);
 
-
 }

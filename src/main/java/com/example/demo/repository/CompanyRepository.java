@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpecificationExecutor<Company> {
 
     Company getById(long id);
+
+
 }

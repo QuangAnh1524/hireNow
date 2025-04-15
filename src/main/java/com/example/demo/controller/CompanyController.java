@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Company;
+import com.example.demo.domain.User;
 import com.example.demo.domain.response.ResultPaginationDTO;
 import com.example.demo.domain.response.RestReponse;
+import com.example.demo.repository.CompanyRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.CompanyService;
 import com.example.demo.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
@@ -13,14 +16,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/v1")
 public class CompanyController {
 
     private final CompanyService companyService;
+    private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
 
-    public CompanyController(CompanyService companyService) {
+    public CompanyController(CompanyService companyService, CompanyRepository companyRepository, UserRepository userRepository) {
         this.companyService = companyService;
+        this.companyRepository = companyRepository;
+        this.userRepository = userRepository;
     }
 
     //get all company
@@ -54,6 +64,13 @@ public class CompanyController {
     //delete company
     @DeleteMapping("/companies/{id}")
     public ResponseEntity<RestReponse<String>> deleteCompany(@PathVariable("id") long id) {
+        Optional<Company> companyOptional = this.companyRepository.findById(id);
+        if (companyOptional.isPresent()) {
+            Company company = companyOptional.get();
+            //fetch all user belong this company
+            List<User> userList = this.userRepository.findByCompany(company);
+            this.userRepository.deleteAll(userList);
+        }
         this.companyService.deleteCompany(id);
         RestReponse<String> response = new RestReponse<>();
         response.setStatusCode(HttpStatus.OK.value());

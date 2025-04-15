@@ -2,12 +2,14 @@ package com.example.demo.domain;
 
 import com.example.demo.util.SecurityUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
 @Table(name = "companies")
@@ -31,6 +33,14 @@ public class Company {
     private Instant updateAt;
     private String createdBy;
     private String updatedBy;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<User> userList;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Job> jobList;
 
     @PrePersist
     public void handleBeforeCreate() {

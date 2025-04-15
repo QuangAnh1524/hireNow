@@ -40,4 +40,8 @@ public class User {
     private Instant updatedAt;
     private String createdBy;
     private String updateBy;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 }

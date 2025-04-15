@@ -1,7 +1,10 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.DTO.*;
 import com.example.demo.domain.User;
+import com.example.demo.domain.response.ResCreateUserDTO;
+import com.example.demo.domain.response.ResUpdateUserDTO;
+import com.example.demo.domain.response.ResUserDTO;
+import com.example.demo.domain.response.ResultPaginationDTO;
 import com.example.demo.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,7 +69,7 @@ public class UserService {
     public ResultPaginationDTO getAllUser(Specification<User> specification, Pageable pageable) {
         Page<User> users = this.userRepository.findAll(specification, pageable);
         ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
-        Meta meta = new Meta();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
 
         meta.setPage(pageable.getPageNumber() + 1);
         meta.setPageSize(pageable.getPageSize());

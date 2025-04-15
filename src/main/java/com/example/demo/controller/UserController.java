@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.DTO.ResCreateUserDTO;
-import com.example.demo.domain.DTO.ResUpdateUserDTO;
-import com.example.demo.domain.DTO.ResUserDTO;
-import com.example.demo.domain.DTO.ResultPaginationDTO;
-import com.example.demo.domain.RestReponse;
+import com.example.demo.domain.response.ResCreateUserDTO;
+import com.example.demo.domain.response.ResUpdateUserDTO;
+import com.example.demo.domain.response.ResUserDTO;
+import com.example.demo.domain.response.ResultPaginationDTO;
+import com.example.demo.domain.response.RestReponse;
 import com.example.demo.domain.User;
 import com.example.demo.service.UserService;
 import com.example.demo.service.exception.idInvalidException;

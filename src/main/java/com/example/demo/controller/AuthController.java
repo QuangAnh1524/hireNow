@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.DTO.LoginDTO;
-import com.example.demo.domain.DTO.ResLoginDTO;
+import com.example.demo.domain.request.ReqLoginDTO;
+import com.example.demo.domain.response.ResLoginDTO;
 import com.example.demo.domain.User;
 import com.example.demo.service.UserService;
 import com.example.demo.service.exception.idInvalidException;
@@ -38,7 +38,7 @@ public class AuthController {
 
 
     @PostMapping("/auth/login")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO loginDTO) {
         //nap input gom username/password vao Security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
         //xac thuc nguoi dung => can viet ham loadUserByUsername

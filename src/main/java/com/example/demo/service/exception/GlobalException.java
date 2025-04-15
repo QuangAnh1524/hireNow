@@ -1,6 +1,6 @@
 package com.example.demo.service.exception;
 
-import com.example.demo.domain.RestReponse;
+import com.example.demo.domain.response.RestReponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;

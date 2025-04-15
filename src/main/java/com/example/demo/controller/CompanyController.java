@@ -1,21 +1,17 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Company;
-import com.example.demo.domain.DTO.ResultPaginationDTO;
-import com.example.demo.domain.RestReponse;
+import com.example.demo.domain.response.ResultPaginationDTO;
+import com.example.demo.domain.response.RestReponse;
 import com.example.demo.service.CompanyService;
 import com.example.demo.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1")

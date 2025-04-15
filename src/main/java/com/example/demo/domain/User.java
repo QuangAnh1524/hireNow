@@ -17,6 +17,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
 
     @NotBlank(message = "Email không được để trống")
@@ -24,13 +25,17 @@ public class User {
 
     @NotBlank(message = "Password không được để trống")
     private String password;
+
     private int age;
 
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
 
     private String address;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
+
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;

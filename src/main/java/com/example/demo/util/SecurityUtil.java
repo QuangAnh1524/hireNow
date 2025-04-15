@@ -1,6 +1,7 @@
 package com.example.demo.util;
 
 import com.example.demo.domain.DTO.ResLoginDTO;
+import com.nimbusds.jose.util.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -12,9 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-import com.nimbusds.jose.util.Base64;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
@@ -38,7 +36,7 @@ public class SecurityUtil {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String createAccessToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication, ResLoginDTO.UserLogin loginDTO) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.jwtExpiration, ChronoUnit.SECONDS);
 
@@ -46,7 +44,7 @@ public class SecurityUtil {
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(authentication.getName())
-                .claim("quanganh", authentication)
+                .claim("user", loginDTO)
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
@@ -97,4 +95,20 @@ public class SecurityUtil {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        return authentication != null && getAuthorities(authentication).noneMatch
 //    }
+
+    private SecretKey getSecretKey() {
+        byte[] keyBytes = Base64.from(jwtKey).decode();
+        return new SecretKeySpec(keyBytes, 0, keyBytes.length, JWT_ALGORITHM.getName());
+    }
+
+    public Jwt checkValidRefreshToken(String token) {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM)
+                .build();
+        try {
+            return jwtDecoder.decode(token);
+        } catch (Exception e) {
+            System.out.println(">>> Refresh Token error: " + e.getMessage());
+            throw e;
+        }
+    }
 }

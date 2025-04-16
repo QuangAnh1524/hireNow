@@ -1,44 +1,44 @@
 package com.example.demo.domain;
 
 import com.example.demo.util.SecurityUtil;
-import com.example.demo.util.constant.ResumeStateEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.List;
 
 @Entity
-@Table(name = "resumes")
+@Table(name = "permissions")
 @Getter
 @Setter
-public class Resume {
+public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @NotBlank(message = "Email không được để trống")
-    private String email;
+    @NotBlank(message = "Name không được để trống")
+    private String name;
 
-    @NotBlank(message = "URL không được để trống (Upload CV chưa thành công)")
-    private String url;
+    @NotBlank(message = "apiPath không được để trống")
+    private String apiPath;
 
-    @Enumerated(EnumType.STRING)
-    private ResumeStateEnum status;
+    @NotBlank(message = "method không được để trống")
+    private String method;
+
+    @NotBlank(message = "module không được để trống")
+    private String module;
 
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "job_id")
-    private Job job;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "permissions")
+    @JsonIgnore
+    private List<Role> roles;
 
     @PrePersist
     public void handleBeforeCreate() {
@@ -48,7 +48,7 @@ public class Resume {
 
     @PreUpdate
     public void handleBeforeUpdate() {
-        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
         this.updatedAt = Instant.now();
     }
 }

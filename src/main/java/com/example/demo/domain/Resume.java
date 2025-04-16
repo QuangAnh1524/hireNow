@@ -1,34 +1,40 @@
 package com.example.demo.domain;
 
 import com.example.demo.util.SecurityUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.demo.util.constant.ResumeStateEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
-import java.util.List;
 
 @Entity
-@Table(name = "skills")
+@Table(name = "resumes")
 @Getter
 @Setter
-
-public class Skill {
+public class Resume {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String name;
+    private String email;
+    private String url;
+
+    @Enumerated(EnumType.STRING)
+    private ResumeStateEnum status;
 
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skillList")
-    @JsonIgnore
-    private List<Job> jobList;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "job_id")
+    private Job job;
 
     @PrePersist
     public void handleBeforeCreate() {
@@ -38,7 +44,7 @@ public class Skill {
 
     @PreUpdate
     public void handleBeforeUpdate() {
-        this.updatedBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+        this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
         this.updatedAt = Instant.now();
     }
 }

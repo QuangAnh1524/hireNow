@@ -92,7 +92,7 @@ public class JobService {
     }
 
     public Optional<Job> getJobById(long id) {
-        return this.jobRepository.getJobById(id);
+        return this.jobRepository.findById(id);
     }
 
     public void delete(long id) {

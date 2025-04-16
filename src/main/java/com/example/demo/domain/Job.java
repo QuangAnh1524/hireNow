@@ -51,6 +51,10 @@ public class Job {
     inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<Skill> skillList;
 
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Resume> resumes;
+
     @PrePersist
     public void handleBeforeCreate() {
         this.createdBy = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";

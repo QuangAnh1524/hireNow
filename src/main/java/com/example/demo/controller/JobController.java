@@ -36,7 +36,7 @@ public class JobController {
     @ApiMessage("Update a job")
     public ResponseEntity<ResUpdateJobDTO> updateJob(@Valid @RequestBody Job job) throws idInvalidException {
         Optional<Job> currentJob = this.jobService.getJobById(job.getId());
-        if (currentJob.isPresent()) {
+        if (currentJob.isEmpty()) {
             throw new idInvalidException("Job not found");
         }
         return ResponseEntity.ok().body(this.jobService.update(job));
@@ -46,7 +46,8 @@ public class JobController {
     @ApiMessage("Delete a job")
     public ResponseEntity<Void> deleteJob(@PathVariable("id") long id) throws idInvalidException {
         Optional<Job> currentJob = this.jobService.getJobById(id);
-        if (currentJob.isPresent()) {
+//        System.out.println(currentJob);
+        if (currentJob.isEmpty()) {
             throw new idInvalidException("Job not found");
         }
         this.jobService.delete(id);
@@ -57,7 +58,7 @@ public class JobController {
     @ApiMessage("Get a job by id")
     public ResponseEntity<Job> getJobById(@PathVariable("id") long id) throws idInvalidException {
         Optional<Job> currentJob = this.jobService.getJobById(id);
-        if (currentJob.isPresent()) {
+        if (currentJob.isEmpty()) {
             throw new idInvalidException("Job not found");
         }
         return ResponseEntity.ok().body(currentJob.get());

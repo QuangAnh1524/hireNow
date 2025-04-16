@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
-    Optional<Job> getJobById(long id);
+    Optional<Job> findById(Long id);
 
     Page<Job> findAll(Specification<Job> specification, Pageable pageable);
 }

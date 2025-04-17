@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.domain.Job;
 import com.example.demo.domain.Resume;
 import com.example.demo.domain.User;
+import com.example.demo.domain.response.ResUserDTO;
 import com.example.demo.domain.response.ResultPaginationDTO;
 import com.example.demo.domain.response.resume.ResCreateResumeDTO;
 import com.example.demo.domain.response.resume.ResFetchResumeDTO;
@@ -10,6 +11,11 @@ import com.example.demo.domain.response.resume.ResUpdateResumeDTO;
 import com.example.demo.repository.JobRepository;
 import com.example.demo.repository.ResumeRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.util.SecurityUtil;
+import com.turkraft.springfilter.converter.FilterSpecification;
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import com.turkraft.springfilter.parser.FilterParser;
+import com.turkraft.springfilter.parser.node.FilterNode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -24,11 +30,15 @@ public class ResumeService {
     private final ResumeRepository resumeRepository;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
+    private final FilterParser filterParser;
+    private final FilterSpecificationConverter filterSpecificationConverter;
 
-    public ResumeService(ResumeRepository resumeRepository, UserRepository userRepository, JobRepository jobRepository) {
+    public ResumeService(ResumeRepository resumeRepository, UserRepository userRepository, JobRepository jobRepository, FilterParser filterParser, FilterSpecificationConverter filterSpecificationConverter) {
         this.resumeRepository = resumeRepository;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
+        this.filterParser = filterParser;
+        this.filterSpecificationConverter = filterSpecificationConverter;
     }
 
     public boolean checkResumeExistByUserAndJob(Resume resume) {
@@ -119,6 +129,27 @@ public class ResumeService {
         List<ResFetchResumeDTO> list = resumePage.getContent().stream().map(this::getResume).toList();
         resultPaginationDTO.setResult(list);
 
+        return resultPaginationDTO;
+    }
+
+    public ResultPaginationDTO getResumeByUser(Pageable pageable) {
+        //query builder
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+        FilterNode node = filterParser.parse("email = '" + email + " '");
+        FilterSpecification<Resume> specification = filterSpecificationConverter.convert(node);
+        Page<Resume> resumePage = this.resumeRepository.findAll(specification, pageable);
+
+        ResultPaginationDTO resultPaginationDTO = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
+
+        meta.setPage(pageable.getPageNumber()+1);
+        meta.setPageSize(pageable.getPageSize());
+
+        meta.setPages(resumePage.getTotalPages());
+        meta.setTotal(resumePage.getTotalElements());
+
+        resultPaginationDTO.setMeta(meta);
+        resultPaginationDTO.setResult(resumePage);
         return resultPaginationDTO;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Company;
+import com.example.demo.domain.Role;
 import com.example.demo.domain.User;
 import com.example.demo.domain.response.ResCreateUserDTO;
 import com.example.demo.domain.response.ResUpdateUserDTO;
@@ -22,11 +23,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CompanyService companyService;
+    private final RoleService roleService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CompanyService companyService) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CompanyService companyService, RoleService roleService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.companyService = companyService;
+        this.roleService = roleService;
     }
 
     public User saveUser(User user) {
@@ -34,6 +37,14 @@ public class UserService {
         if (user.getCompany() != null) {
             Optional<Company> companyOptional = Optional.ofNullable(this.companyService.getCompanyById(user.getCompany().getId()));
             user.setCompany(companyOptional.orElse(null));
+        }
+
+        //check role
+        if (user.getRole() != null) {
+            Role role = this.roleService.getById(user.getRole().getId());
+            user.setRole(role);
+        } else {
+            user.setRole(null);
         }
 
         String passwordEncoded = passwordEncoder.encode(user.getPassword());
@@ -75,10 +86,17 @@ public class UserService {
     public ResUserDTO convertToResUserDTO(User user) {
         ResUserDTO userDTO = new ResUserDTO();
         ResUserDTO.CompanyUser companyUser = new ResUserDTO.CompanyUser();
+        ResUserDTO.RoleUser roleUser = new ResUserDTO.RoleUser();
         if (user.getCompany() != null) {
             companyUser.setId(user.getCompany().getId());
             companyUser.setName(user.getCompany().getName());
             userDTO.setCompanyUser(companyUser);
+        }
+
+        if (user.getRole() != null) {
+            roleUser.setId(user.getRole().getId());
+            roleUser.setName(user.getRole().getName());
+            userDTO.setRoleUser(roleUser);
         }
 
         userDTO.setId(user.getId());
@@ -106,18 +124,7 @@ public class UserService {
 
         //remove sensitive data
         List<ResUserDTO> userDTOList = users.getContent()
-                .stream().map(item -> new ResUserDTO(
-                        item.getId(),
-                        item.getEmail(),
-                        item.getName(),
-                        item.getGender(),
-                        item.getAddress(),
-                        item.getAge(),
-                        item.getUpdatedAt(),
-                        item.getCreatedAt(),
-                        new ResUserDTO.CompanyUser(
-                                item.getCompany() != null ? item.getCompany().getId() : 0,
-                                item.getCompany() != null ? item.getCompany().getName() : null)))
+                .stream().map(this::convertToResUserDTO)
                 .collect(Collectors.toList());
         resultPaginationDTO.setResult(userDTOList);
         return resultPaginationDTO;
@@ -136,6 +143,15 @@ public class UserService {
                 Optional<Company> companyOptional = Optional.ofNullable(this.companyService.getCompanyById(user.getCompany().getId()));
                 currentUser.setCompany(companyOptional.orElse(null));
             }
+
+            //check role
+            if (user.getRole() != null) {
+                Role role = this.roleService.getById(user.getRole().getId());
+                currentUser.setRole(role);
+            } else {
+                currentUser.setRole(null);
+            }System.out.println("Role before save: " + currentUser.getRole().getName());
+
             currentUser = this.userRepository.save(currentUser);
         }
         return currentUser;

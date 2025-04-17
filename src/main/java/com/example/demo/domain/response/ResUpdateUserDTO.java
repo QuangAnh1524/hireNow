@@ -1,6 +1,9 @@
 package com.example.demo.domain.response;
 
+import com.example.demo.util.SecurityUtil;
 import com.example.demo.util.constant.GenderEnum;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,5 +29,10 @@ public class ResUpdateUserDTO {
     public static class CompanyUser {
         private long id;
         private String name;
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate() {
+        this.updatedAt = Instant.now();
     }
 }

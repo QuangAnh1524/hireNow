@@ -4,23 +4,36 @@ import com.example.demo.domain.Permission;
 import com.example.demo.domain.Skill;
 import com.example.demo.domain.response.ResultPaginationDTO;
 import com.example.demo.repository.PermissionRepository;
+import com.example.demo.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class PermissionService {
     private final PermissionRepository permissionRepository;
+    private final UserRepository userRepository;
 
-    public PermissionService(PermissionRepository permissionRepository) {
+    public PermissionService(PermissionRepository permissionRepository, UserRepository userRepository) {
         this.permissionRepository = permissionRepository;
+        this.userRepository = userRepository;
     }
 
     public boolean isPermissionExist(Permission permission) {
         return permissionRepository.existsByModuleAndApiPathAndMethod(permission.getModule(), permission.getApiPath(), permission.getMethod());
+    }
+
+    public boolean isSameName(Permission permission) {
+        Permission permissionDB = this.getById(permission.getId());
+        if (permissionDB != null) {
+            if (permissionDB.getName().equals(permission.getName()))
+                return true;
+        }
+        return false;
     }
 
     public Permission create(Permission permission) {
@@ -71,5 +84,12 @@ public class PermissionService {
         resultPaginationDTO.setResult(permissions.getContent());
 
         return resultPaginationDTO;
+    }
+
+    public List<Permission> getPermissionsByUserEmail(String email) {
+        return userRepository.findByEmail(email)
+                .filter(user -> user.getRole() != null)
+                .map(user -> user.getRole().getPermissions())
+                .orElse(List.of());
     }
 }

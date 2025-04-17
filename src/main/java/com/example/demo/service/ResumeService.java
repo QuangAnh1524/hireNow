@@ -3,7 +3,6 @@ package com.example.demo.service;
 import com.example.demo.domain.Job;
 import com.example.demo.domain.Resume;
 import com.example.demo.domain.User;
-import com.example.demo.domain.response.ResUserDTO;
 import com.example.demo.domain.response.ResultPaginationDTO;
 import com.example.demo.domain.response.resume.ResCreateResumeDTO;
 import com.example.demo.domain.response.resume.ResFetchResumeDTO;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ResumeService {
@@ -54,9 +52,7 @@ public class ResumeService {
         //check job by id
         if (resume.getJob() == null) return false;
         Optional<Job> jobOptional = this.jobRepository.findById(resume.getJob().getId());
-        if (jobOptional.isEmpty()) return false;
-
-        return true;
+        return jobOptional.isPresent();
     }
 
     public ResCreateResumeDTO create(Resume resume) {
@@ -135,7 +131,7 @@ public class ResumeService {
     public ResultPaginationDTO getResumeByUser(Pageable pageable) {
         //query builder
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
-        FilterNode node = filterParser.parse("email = '" + email + " '");
+        FilterNode node = filterParser.parse("email = '" + email + "'");
         FilterSpecification<Resume> specification = filterSpecificationConverter.convert(node);
         Page<Resume> resumePage = this.resumeRepository.findAll(specification, pageable);
 

@@ -58,6 +58,16 @@ public class RoleController {
         return ResponseEntity.ok().body(null);
     }
 
+    @GetMapping("/roles/{id}")
+    @ApiMessage("Fetch role by id")
+    public ResponseEntity<Role> getById(@PathVariable("id") long id) throws idInvalidException {
+        Role role = this.roleService.getById(id);
+        if (role == null) {
+            throw new idInvalidException("Role với id = "+ id+" không tồn tại");
+        }
+        return ResponseEntity.ok().body(role);
+    }
+
     @GetMapping("/roles")
     @ApiMessage("Fetch roles")
     public ResponseEntity<ResultPaginationDTO> getPermissions(@Filter Specification<Role> spec, Pageable pageable) {

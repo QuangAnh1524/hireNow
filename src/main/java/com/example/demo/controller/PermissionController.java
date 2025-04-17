@@ -38,6 +38,10 @@ public class PermissionController {
     public ResponseEntity<Permission> updatePermission(@Valid @RequestBody Permission permission) throws idInvalidException {
         //check exist by module, apiPath and method
         if (this.permissionService.isPermissionExist(permission)) {
+            //check name
+            if (this.permissionService.isSameName(permission)) {
+                throw new idInvalidException("Permission đã tồn tại");
+            }
             throw new idInvalidException("Permission đã tồn tại");
         }
 
@@ -64,6 +68,7 @@ public class PermissionController {
     @GetMapping("/permissions")
     @ApiMessage("Fetch permissions")
     public ResponseEntity<ResultPaginationDTO> getPermissions(@Filter Specification<Permission> specification, Pageable pageable) {
+//        System.out.println(">>> Gọi xong findAll trong getPermissions");
         return ResponseEntity.ok(this.permissionService.getPermissions(specification, pageable));
     }
 }

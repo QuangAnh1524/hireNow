@@ -78,7 +78,7 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/api/v1/auth/login", "/api/v1/auth/refresh",
-                                "/storage/**", "/api/v1/auth/register").permitAll()
+                                "/storage/**", "/api/v1/auth/register", "/api/v1/subscribers", "/api/v1/email/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(authenticationEntryPoint))

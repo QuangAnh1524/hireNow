@@ -13,6 +13,9 @@ import java.util.Optional;
 
 @Repository
 public interface SkillRepository extends JpaRepository<Skill, Long>, JpaSpecificationExecutor<Skill> {
+
+    Optional<Skill> findByName(String name);
+
     boolean existsByName(String name);
 
     Skill save(Skill skill);

@@ -30,11 +30,11 @@ public class PermissionInterceptor implements HandlerInterceptor {
         System.out.println(">>> httpMethod = " + httpMethod);
         System.out.println(">>> requestURI = " + requestURI);
 
-        // Bỏ qua cho /api/v1/email/** và /api/v1/subscribers/**
-        if (requestURI.startsWith("/api/v1/email") || requestURI.startsWith("/api/v1/subscribers") || requestURI.equals("/error")) {
-            System.out.println(">>> Skipping PermissionInterceptor for: " + requestURI);
-            return true;
-        }
+//        // Bỏ qua cho /api/v1/email/** và /api/v1/subscribers/**
+//        if (requestURI.startsWith("/api/v1/email") || requestURI.startsWith("/api/v1/subscribers") || requestURI.equals("/error")) {
+//            System.out.println(">>> Skipping PermissionInterceptor for: " + requestURI);
+//            return true;
+//        }
 
         // Lấy email của user hiện tại
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";

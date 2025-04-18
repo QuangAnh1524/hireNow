@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skill Subscription Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #007bff;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .content p {
+            margin: 10px 0;
+        }
+        .job-list {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .job-list h3 {
+            margin: 0 0 10px;
+            color: #333;
+        }
+        .job-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .job-item:last-child {
+            border-bottom: none;
+        }
+        .job-item p {
+            margin: 5px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Đăng ký theo dõi kỹ năng</h1>
+    </div>
+    <div class="content">
+        <p>Kính gửi <span th:text="${candidateName}">Tên Người Dùng</span>,</p>
+        <p>Cảm ơn bạn đã đăng ký theo dõi các kỹ năng <strong th:text="${skillNames}">Kỹ Năng</strong>. Dưới đây là danh sách các công việc phù hợp với kỹ năng của bạn:</p>
+
+        <div class="job-list">
+            <h3>Các công việc phù hợp</h3>
+            <div th:each="job : ${jobList}" class="job-item">
+                <p><strong>Vị trí:</strong> <span th:text="${job.name}">Tên Vị Trí</span></p>
+                <p><strong>Địa điểm:</strong> <span th:text="${job.location}">Địa điểm</span></p>
+                <p><strong>Cấp bậc:</strong> <span th:text="${job.level}">Cấp bậc</span></p>
+                <p><strong>Mức lương:</strong> <span th:text="${job.salary} + ' USD'">Mức lương</span></p>
+            </div>
+            <p th:if="${jobList.isEmpty()}">Hiện tại chưa có công việc nào phù hợp với kỹ năng <span th:text="${skillNames}"/>.</p>
+        </div>
+
+        <p>Chúng tôi sẽ tiếp tục gửi thông báo khi có công việc mới phù hợp với kỹ năng của bạn. Nếu bạn có câu hỏi, vui lòng liên hệ qua email <a th:href="'mailto:' + ${contactEmail}" th:text="${contactEmail}">email@company.com</a>.</p>
+
+        <a th:href="${jobPortalUrl}" class="button">Xem thêm cơ hội việc làm</a>
+    </div>
+    <div class="footer">
+        <p>Trân trọng,<br>
+            Đội ngũ tuyển dụng<br>
+            <a th:href="${companyWebsite}" th:text="${companyWebsite}">www.company.com</a></p>
+        <p>Nếu bạn không muốn nhận email này nữa, vui lòng <a th:href="${unsubscribeUrl}">hủy đăng ký</a>.</p>
+    </div>
+</div>
+</body>
+</html>

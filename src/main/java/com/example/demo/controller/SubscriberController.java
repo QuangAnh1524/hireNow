@@ -4,6 +4,7 @@ import com.example.demo.domain.Subscriber;
 import com.example.demo.service.SubscriberService;
 import com.example.demo.service.exception.idInvalidException;
 import com.example.demo.util.annotation.ApiMessage;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class SubscriberController {
 
     @PostMapping("/subscribers")
     @ApiMessage("Create a subscriber")
-    public ResponseEntity<Subscriber> create(@Valid @RequestBody Subscriber subscriber) throws idInvalidException {
+    public ResponseEntity<Subscriber> create(@Valid @RequestBody Subscriber subscriber) throws idInvalidException, MessagingException {
         //check email
         boolean isExist = this.subscriberService.isExistByEmail(subscriber.getEmail());
         if (isExist) {

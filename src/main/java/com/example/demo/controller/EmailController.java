@@ -9,6 +9,8 @@ import com.example.demo.repository.SubscriberRepository;
 import com.example.demo.service.EmailService;
 import com.example.demo.util.annotation.ApiMessage;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,6 +37,8 @@ public class EmailController {
 
     @GetMapping("/email")
     @ApiMessage("Send skill subscription email")
+    @Scheduled(cron = "0 0 8 * * ?") //8h sáng mỗi ngày
+    @Transactional
     public String sendSimpleEmail() throws MessagingException {
         try {
             List<Subscriber> subscribers = subscriberRepository.findAll();

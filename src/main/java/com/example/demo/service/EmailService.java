@@ -10,6 +10,8 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -57,6 +59,7 @@ public class EmailService {
         this.sendEmailSync(to, subject, content, false, true);
     }
 
+    @Async
     public void sendSkillSubscriptionEmail(String to, String subject, SkillSubscriptionEmailDTO emailDTO) throws MessagingException {
         System.out.println(">>> Sending email to: " + to + " with template: skill-subscription-confirmation");
         Context context = new Context();
